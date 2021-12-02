@@ -60,6 +60,22 @@ namespace Unittests
             }
 
         }
+        public class FilledStaticEnitySource
+        {
+            public static readonly List<Entity> TestUsers = new()
+            {
+                new(new Identity("Pascal", "Glase", 5)),
+                new(new Identity("A", "B", 15)),
+                new(new Identity("D", "F", 15))
+            };
+            StaticEntitySource TestSource = new(TestUsers);
 
+           [Fact]
+            public void UserCountMatchingData()
+            {
+                Assert.True(TestSource.StoredUserCount() == TestUsers.Count);
+            }
+
+        }
     }
 }
