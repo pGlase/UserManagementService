@@ -1,14 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UserManagementService.Credental
+namespace UserManagementService.Credentials
 {
-    class Password : ICredental
+    public class Password
     {
-        SecureString HashedPassword;
+        public Password(string password)
+        {
+            StoredPassword = password;
+        }
+
+        string StoredPassword;
+        
+        public bool Validate(string toValidate)
+        {
+            return true;
+        }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserManagementService.Credental;
 
 namespace UserManagementService.Users
 {
@@ -14,12 +13,12 @@ namespace UserManagementService.Users
             Identity = identity;
         }
 
-        public Entity(Identity identity, List<ICredental> credentals)
-        {
-            Identity = identity;
-            Credentals = credentals;
-        }
-        public List<ICredental> Credentals { get; set; }
+        //public Entity(Identity identity, List<Credental.Credental> credentals)
+        //{
+        //    Identity = identity;
+        //    Credentals = credentals;
+        //}
+        //public List<Credental.Credental> Credentals { get; set; }
 
         public Identity Identity { get; set; }
     }
