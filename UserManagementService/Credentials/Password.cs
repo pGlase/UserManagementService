@@ -10,14 +10,23 @@ namespace UserManagementService.Credentials
     {
         public Password(string password)
         {
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException(password, "Passwords may not be null or empty");
+            }
             StoredPassword = password;
+            SetDate = DateTime.Now;
+        }
+        public Password(string password, DateTime setDate) : this(password)
+        {
+            SetDate = setDate;
         }
 
         string StoredPassword;
-        
+        DateTime SetDate;
         public bool Validate(string toValidate)
         {
-            return true;
+            return StoredPassword.Equals(toValidate);
         }
     }
 }
