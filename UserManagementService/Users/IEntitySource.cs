@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UserManagementService.Users
 {
-    interface IEntitySource
+    public interface IEntitySource
     {
         bool AddUser(Entity user);
         bool RemoveUser(Entity user);
