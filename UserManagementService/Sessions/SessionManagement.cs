@@ -24,10 +24,10 @@ namespace UserManagementService.Sessions
 
         public SessionToken CreateSession(Entity SessionOwner)
         {
-            var newSession = new Session(SessionOwner.Identity, 
-                new SessionToken(SessionOwner.Identity, GenerateNewSessionId()));
+            var newToken = new SessionToken(SessionOwner.Identity, GenerateNewSessionId());
+            var newSession = new Session(newToken);
             ActiveSessions.Add(newSession);
-            return new SessionToken(SessionOwner.Identity, "");
+            return newToken;
         }
     private static string GenerateNewSessionId()
         {
