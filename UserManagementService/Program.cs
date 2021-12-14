@@ -5,7 +5,7 @@ namespace UserManagementService
 {
     class Program
     {
-
+        /*
         static void PrintArray(List<int> toSort)
         {
             foreach(int x in toSort){
@@ -81,13 +81,15 @@ namespace UserManagementService
             result.AddRange(B);
             return result;
         }
-
+        */
         static void Main(string[] args)
         {
+            /*
             List<int> toSort = new List<int> { 1, 5, 3, 7, 9, 10, 2,11 };
             PrintArray(toSort);
             List<int> res = MergeSort(toSort);
             PrintArray(res);
+            */
         }
     }
 }

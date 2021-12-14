@@ -14,12 +14,13 @@ namespace UserManagementService.Sessions
 
         public SessionManagement(IEntitySource SystemUsers)
         {
+            ActiveSessions = new();
             this.ActiveUsers = SystemUsers;
         }
 
         public int GetActiveSessionCount()
         {
-            return 0;
+            return ActiveSessions.Count;
         }
 
         public SessionToken CreateSession(Entity SessionOwner)
@@ -31,7 +32,7 @@ namespace UserManagementService.Sessions
         }
     private static string GenerateNewSessionId()
         {
-            return "lol";
+            return Guid.NewGuid().ToString();
         }
     
     }

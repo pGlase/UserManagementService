@@ -13,11 +13,11 @@ namespace UserManagementService.Users
             FirstName = _firstName;
             LastName = _lastName;
             Age = _age;
-
         }
-        string FirstName { get; set; }
-        string LastName { get; set; }
-        int Age { get; set; }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Age { get; set; }
 
         public bool Equals(Identity other)
         {

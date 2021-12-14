@@ -15,7 +15,7 @@ namespace Unittests
         [Fact]
         public void ConstructValidSession()
         {
-            var TestIdentity = new Identity(null, null, 0);
+            var TestIdentity = UsertestTools.CreateTestIdentity();
             var TestToken = new SessionToken(TestIdentity, "TestId");
             var _ = new Session(TestToken);
             Assert.Equal(TestIdentity, _.InternalToken.SessionOwner);
@@ -37,7 +37,7 @@ namespace Unittests
         [Fact]
         public void ConstructSession_Sessiontoken_WithEmptyId_Fail()
         {
-            var TestIdentity = new Identity(null, null, 0);
+            var TestIdentity = UsertestTools.CreateTestIdentity();
             var TestToken = new SessionToken(TestIdentity, "");
             Assert.Throws<ArgumentNullException>(() => new Session(TestToken));
         }
