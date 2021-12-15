@@ -20,7 +20,9 @@ namespace UserManagementService.Users
             Password = password;
         }
 
-        public Identity Identity { get; set; }
+        public Identity Identity { get; private set; }
         public Password Password { get; private set; }
+
+        public void UpdatePassword(Password NewPassword) => Password = NewPassword;
     }
 }
