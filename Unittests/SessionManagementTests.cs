@@ -12,8 +12,6 @@ namespace Unittests
 {
     public class SessionManagementTests
     {
-
-
         [Fact]
         public void ConstructSessionManagement()
         {
@@ -30,15 +28,28 @@ namespace Unittests
         }
 
         [Fact]
-        public void SessionManagement_CreateSession_NonExistingUser_Failure()
+        public void SessionManagement_CreateSession_ChecksUserExistance()
         {
             var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
             var MockUserSource = new Mock<IEntitySource>();
-            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(false).Verifiable();
+            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true).Verifiable();
             var SManagement = new SessionManagement(MockUserSource.Object);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>SManagement.CreateSession(TestUser));
+            var _ = SManagement.CreateSession(TestUser);
 
+            MockUserSource.Verify(x => x.DoesUserExist(TestUser), Times.Once());
+        }
+
+
+        [Fact]
+        public void SessionManagement_CreateSession_NonExistentUser_Failure()
+        {
+            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
+            var MockUserSource = new Mock<IEntitySource>();
+            MockUserSource.Setup(x => x.DoesUserExist(It.IsAny<Entity>())).Returns(false).Verifiable();
+            var SManagement = new SessionManagement(MockUserSource.Object);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => SManagement.CreateSession(TestUser));
             MockUserSource.Verify(x => x.DoesUserExist(TestUser), Times.Once());
         }
 
@@ -47,14 +58,13 @@ namespace Unittests
         {
             var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
             var MockUserSource = new Mock<IEntitySource>();
-            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true).Verifiable();
+            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
             var SManagement = new SessionManagement(MockUserSource.Object);
 
             var SessionToken = SManagement.CreateSession(TestUser);
 
             Assert.Equal(TestUser.Identity, SessionToken.SessionOwner);
             Assert.Equal(1, SManagement.GetActiveSessionCount());
-            MockUserSource.Verify(x => x.DoesUserExist(TestUser), Times.Once());
         }
 
         [Fact]
@@ -69,5 +79,20 @@ namespace Unittests
             Assert.Throws<UserSessionAlreadyExistsException>(() => SManagement.CreateSession(TestUser));
         }
 
+        [Fact]
+        public void SessionManagement_CreateSessions_MultipleUsers_VerifySessionCount_Success()
+        {
+            var TestUsers = UsertestTools.CreateFiveUniqueEntitesWithoutPassword();
+            var MockUserSource = new Mock<IEntitySource>();
+            MockUserSource.Setup(x => x.DoesUserExist(It.IsAny<Entity>())).Returns(true);
+            var SManagement = new SessionManagement(MockUserSource.Object);
+
+            foreach (var user in TestUsers)
+            {
+               var _ = SManagement.CreateSession(user);
+            }
+
+            Assert.Equal(TestUsers.Length, SManagement.GetActiveSessionCount());
+        }
     }
 }

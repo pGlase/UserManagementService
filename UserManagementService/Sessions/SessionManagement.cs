@@ -26,7 +26,8 @@ namespace UserManagementService.Sessions
         public SessionToken CreateSession(Entity SessionOwner)
         {
             bool UserHasSession = ActiveSessions.Any(
-                s => s.InternalToken.SessionOwner.Equals(SessionOwner.Identity));
+                s => s.InternalToken.SessionOwner.Equals(SessionOwner.Identity)
+                );
             if (UserHasSession)
             {
                 throw new UserSessionAlreadyExistsException();
