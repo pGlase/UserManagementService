@@ -30,22 +30,44 @@ namespace Unittests
         }
 
         [Fact]
+        public void SessionManagement_CreateSession_NonExistingUser_Failure()
+        {
+            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
+            var MockUserSource = new Mock<IEntitySource>();
+            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(false).Verifiable();
+            var SManagement = new SessionManagement(MockUserSource.Object);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>SManagement.CreateSession(TestUser));
+
+            MockUserSource.Verify(x => x.DoesUserExist(TestUser), Times.Once());
+        }
+
+        [Fact]
         public void SessionManagement_CreateSession_ExistingUser_Success()
         {
-            //arrange
-            var TestUser = new Entity(UsertestTools.CreateTestIdentity());
+            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
+            var MockUserSource = new Mock<IEntitySource>();
+            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true).Verifiable();
+            var SManagement = new SessionManagement(MockUserSource.Object);
+
+            var SessionToken = SManagement.CreateSession(TestUser);
+
+            Assert.Equal(TestUser.Identity, SessionToken.SessionOwner);
+            Assert.Equal(1, SManagement.GetActiveSessionCount());
+            MockUserSource.Verify(x => x.DoesUserExist(TestUser), Times.Once());
+        }
+
+        [Fact]
+        public void SessionManagement_CreateSession_ExistingUser_Twice_Failure()
+        {
+            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
             var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
             var SManagement = new SessionManagement(MockUserSource.Object);
 
-            //act
             var SessionToken = SManagement.CreateSession(TestUser);
-
-            //assert
-            Assert.Equal(TestUser.Identity, SessionToken.SessionOwner);
-            Assert.Equal(1, SManagement.GetActiveSessionCount());
+            Assert.Throws<UserSessionAlreadyExistsException>(() => SManagement.CreateSession(TestUser));
         }
-
 
     }
 }

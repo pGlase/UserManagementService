@@ -36,10 +36,8 @@ namespace Unittests
         [Fact]
         public void CreateVaildEnitity_SetNewPassword()
         {
-            var FirstPassword = new Password("test");
+            var TestEntity = UsertestTools.CreateTestEntityWithPassword();
             var SecondPassword = new Password("newPassword");
-            var TestIdentity = UsertestTools.CreateTestIdentity();
-            var TestEntity = new Entity(TestIdentity, FirstPassword);
 
             TestEntity.UpdatePassword(SecondPassword);
 

@@ -25,15 +25,28 @@ namespace UserManagementService.Sessions
 
         public SessionToken CreateSession(Entity SessionOwner)
         {
+            bool UserHasSession = ActiveSessions.Any(
+                s => s.InternalToken.SessionOwner.Equals(SessionOwner.Identity));
+            if (UserHasSession)
+            {
+                throw new UserSessionAlreadyExistsException();
+            }
+
+            bool UserExistsInSystem = ActiveUsers.DoesUserExist(SessionOwner);
+            if (!UserExistsInSystem)
+            {
+                throw new ArgumentOutOfRangeException(nameof(SessionOwner), "Given user does not exist in the system!");
+            }
+
             var newToken = new SessionToken(SessionOwner.Identity, GenerateNewSessionId());
             var newSession = new Session(newToken);
             ActiveSessions.Add(newSession);
             return newToken;
         }
-    private static string GenerateNewSessionId()
+        private static string GenerateNewSessionId()
         {
             return Guid.NewGuid().ToString();
         }
-    
+
     }
 }
