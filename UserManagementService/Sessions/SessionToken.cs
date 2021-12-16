@@ -33,8 +33,8 @@ namespace UserManagementService.Sessions
 
         public bool Equals(SessionToken other)
         {
-            //comparing the id's should be enough - SessionManagement will enforce 1 session per user
-            return InternalId == other.InternalId;
+            //Id match should be enough in most cases, check owner later
+            return InternalId == other.InternalId && SessionOwner.Equals(other.SessionOwner);
         }
 
         [ExcludeFromCodeCoverage]
