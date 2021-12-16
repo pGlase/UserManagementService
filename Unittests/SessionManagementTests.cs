@@ -100,5 +100,48 @@ namespace Unittests
 
             Assert.Equal(TestUsers.Length, SManagement.GetActiveSessionCount());
         }
+
+        [Fact]
+        public void SessionManagement_IsValidToken_NullToken_Failure()
+        {
+            var MockUserSource = new Mock<IEntitySource>();
+            var SManagement = new SessionManagement(MockUserSource.Object);
+            Assert.Throws<ArgumentNullException>(() => SManagement.IsValidToken(null));
+        }
+
+        [Fact]
+        public void SessionManagement_IsValidToken_InvalidToken_Failure()
+        {
+            var MockUserSource = new Mock<IEntitySource>();
+            var SManagement = new SessionManagement(MockUserSource.Object);
+            var TestToken = new SessionToken(UsertestTools.CreateTestIdentity(), "invalid");
+
+            Assert.False(SManagement.IsValidToken(TestToken));
+        }
+
+        [Fact]
+        public void SessionManagement_IsValidToken_ValidToken_Success()
+        {
+            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
+            var MockUserSource = new Mock<IEntitySource>();
+            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
+            var SManagement = new SessionManagement(MockUserSource.Object);
+            var TestToken = SManagement.CreateSession(TestUser);
+
+            Assert.True(SManagement.IsValidToken(TestToken));
+        }
+
+        [Fact (Skip = "Figure out how to prevent manipulation of the token")]
+        public void SessionManagement_IsValidToken_Manipulate_ValidToken_Failure()
+        {
+            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
+            var MockUserSource = new Mock<IEntitySource>();
+            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
+            var SManagement = new SessionManagement(MockUserSource.Object);
+            var TestToken = SManagement.CreateSession(TestUser);
+            TestToken.SessionOwner.FirstName = "SomebodyElse";
+            Assert.False(SManagement.IsValidToken(TestToken));
+        }
+
     }
 }

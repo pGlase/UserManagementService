@@ -37,13 +37,18 @@ namespace UserManagementService.Sessions
                 throw new ArgumentOutOfRangeException(nameof(SessionOwner), "Given user does not exist in the system!");
             }
 
+            //ToDo: Refactor into SessionFactory and inject it into Management
             var newToken = new SessionToken(SessionOwner.Identity, GenerateNewSessionId());
             var newSession = new Session(newToken);
             ActiveSessions.Add(newSession);
             return newToken;
         }
 
-        public override bool IsValidToken(SessionToken Token) => throw new NotImplementedException();
+        public override bool IsValidToken(SessionToken Token)
+        {
+            if (Token is null) { throw new ArgumentNullException(nameof(Token), "Null Tokens may not be checked"); }
+            return ActiveSessions.Any(x => x.InternalToken == Token);
+        }
 
         private static string GenerateNewSessionId()
         {
