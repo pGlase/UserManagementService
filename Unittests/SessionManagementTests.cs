@@ -20,6 +20,12 @@ namespace Unittests
         }
 
         [Fact]
+        public void CreateSourceWithNullReference()
+        {
+            Assert.Throws<ArgumentNullException>(() => new SessionManagement(null));
+        }
+
+        [Fact]
         public void ConstructEmptySessionManagement_HasNoActiveSessions_Success()
         {
             var MockUserSource = new Mock<IEntitySource>();
@@ -89,7 +95,7 @@ namespace Unittests
 
             foreach (var user in TestUsers)
             {
-               var _ = SManagement.CreateSession(user);
+                var _ = SManagement.CreateSession(user);
             }
 
             Assert.Equal(TestUsers.Length, SManagement.GetActiveSessionCount());

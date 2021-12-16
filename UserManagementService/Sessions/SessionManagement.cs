@@ -7,23 +7,21 @@ using UserManagementService.Users;
 
 namespace UserManagementService.Sessions
 {
-    public class SessionManagement
+    public class SessionManagement : ISessionManagement
     {
-        private IEntitySource ActiveUsers;
         private List<Session> ActiveSessions;
 
-        public SessionManagement(IEntitySource SystemUsers)
+        public SessionManagement(IEntitySource SystemUsers) : base(SystemUsers)
         {
             ActiveSessions = new();
-            this.ActiveUsers = SystemUsers;
         }
 
-        public int GetActiveSessionCount()
+        public override int GetActiveSessionCount() 
         {
             return ActiveSessions.Count;
         }
 
-        public SessionToken CreateSession(Entity SessionOwner)
+        public override SessionToken CreateSession(Entity SessionOwner)
         {
             bool UserHasSession = ActiveSessions.Any(
                 s => s.InternalToken.SessionOwner.Equals(SessionOwner.Identity)
@@ -44,9 +42,12 @@ namespace UserManagementService.Sessions
             ActiveSessions.Add(newSession);
             return newToken;
         }
+
+        public override bool IsValidToken(SessionToken Token) => throw new NotImplementedException();
+
         private static string GenerateNewSessionId()
         {
-            return Guid.NewGuid().ToString();
+            return Guid.NewGuid().ToString().Split('-').First();
         }
 
     }

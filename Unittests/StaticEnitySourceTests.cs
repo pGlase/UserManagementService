@@ -70,7 +70,7 @@ namespace Unittests
             };
             StaticEntitySource TestSource = new(TestUsers);
 
-           [Fact]
+            [Fact]
             public void UserCountMatchingData()
             {
                 Assert.True(TestSource.StoredUserCount() == TestUsers.Count);
