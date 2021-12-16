@@ -26,20 +26,6 @@ namespace Unittests
         {
             Assert.Throws<ArgumentNullException>(() => new Session(null));
         }
-
-        [Fact]
-        public void ConstructSession_Sessiontoken_WithNullIdentity_Fail()
-        {
-            var TestToken = new SessionToken(null, "TestId");
-            Assert.Throws<ArgumentNullException>(() => new Session(TestToken));
-        }
-
-        [Fact]
-        public void ConstructSession_Sessiontoken_WithEmptyId_Fail()
-        {
-            var TestIdentity = UsertestTools.CreateTestIdentity();
-            var TestToken = new SessionToken(TestIdentity, "");
-            Assert.Throws<ArgumentNullException>(() => new Session(TestToken));
-        }
+        
     }
 }

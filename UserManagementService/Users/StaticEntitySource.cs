@@ -32,7 +32,7 @@ namespace UserManagementService.Users
 
         public bool DoesUserExist(Entity user)
         {
-            var res = Users.SingleOrDefault(res => res.Identity == user.Identity);
+            var res = Users.SingleOrDefault(res => res.Identity.Equals(user.Identity));
             if(res is null)
             {
                 return false;

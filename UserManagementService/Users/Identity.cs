@@ -8,16 +8,17 @@ namespace UserManagementService.Users
 {
     public class Identity : IEquatable<Identity>
     {
+
+        public string FirstName { get; }
+        public string LastName { get; }
+        public int Age { get; }
+
         public Identity(string _firstName, string _lastName, int _age)
         {
             FirstName = _firstName;
             LastName = _lastName;
             Age = _age;
         }
-
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int Age { get; set; }
 
         public bool Equals(Identity other)
         {

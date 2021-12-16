@@ -17,15 +17,6 @@ namespace UserManagementService.Sessions
                 throw new ArgumentNullException(nameof(SessionToken), "SessionToken must not be null!");
             }
 
-            if (SessionToken.SessionOwner is null)
-            {
-                throw new ArgumentNullException(nameof(SessionToken), "SessionToken must have an valid owner!");
-            }
-
-            if (string.IsNullOrEmpty(SessionToken.InternalId))
-            {
-                throw new ArgumentNullException(nameof(SessionToken), "SessionToken must have a valid id!");
-            }
             this.InternalToken = SessionToken;
         }
     }

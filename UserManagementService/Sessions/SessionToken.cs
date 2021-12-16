@@ -10,12 +10,24 @@ namespace UserManagementService.Sessions
 
     public class SessionToken
     {
+        public Identity SessionOwner {  get; }
+        public string InternalId { get; }
+
         public SessionToken(Identity _SessionOwner, string _InternalId)
         {
+
+            if (_SessionOwner is null)
+            {
+                throw new ArgumentNullException(nameof(_SessionOwner), "SessionToken must have an valid owner!");
+            }
+
+            if (string.IsNullOrEmpty(_InternalId))
+            {
+                throw new ArgumentNullException(nameof(_InternalId), "SessionToken must have a valid id!");
+            }
+
             SessionOwner = _SessionOwner;
             InternalId = _InternalId;
         }
-        public readonly Identity SessionOwner;
-        public readonly string InternalId;
     }
 }

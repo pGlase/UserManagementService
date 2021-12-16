@@ -8,6 +8,9 @@ namespace UserManagementService.Credentials
 {
     public class Password
     {
+        string StoredPassword;
+        DateTime SetDate;
+
         public Password(string password)
         {
             if (string.IsNullOrEmpty(password))
@@ -17,13 +20,12 @@ namespace UserManagementService.Credentials
             StoredPassword = password;
             SetDate = DateTime.Now;
         }
+
         public Password(string password, DateTime setDate) : this(password)
         {
             SetDate = setDate;
         }
 
-        string StoredPassword;
-        DateTime SetDate;
         public bool Validate(string toValidate)
         {
             return StoredPassword.Equals(toValidate);

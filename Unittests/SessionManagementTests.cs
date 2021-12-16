@@ -131,17 +131,5 @@ namespace Unittests
             Assert.True(SManagement.IsValidToken(TestToken));
         }
 
-        [Fact (Skip = "Figure out how to prevent manipulation of the token")]
-        public void SessionManagement_IsValidToken_Manipulate_ValidToken_Failure()
-        {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
-            MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
-            var SManagement = new SessionManagement(MockUserSource.Object);
-            var TestToken = SManagement.CreateSession(TestUser);
-            TestToken.SessionOwner.FirstName = "SomebodyElse";
-            Assert.False(SManagement.IsValidToken(TestToken));
-        }
-
     }
 }
