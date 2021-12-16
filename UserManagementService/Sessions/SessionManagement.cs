@@ -47,7 +47,7 @@ namespace UserManagementService.Sessions
         public override bool IsValidToken(SessionToken Token)
         {
             if (Token is null) { throw new ArgumentNullException(nameof(Token), "Null Tokens may not be checked"); }
-            return ActiveSessions.Any(x => x.InternalToken == Token);
+            return ActiveSessions.Any(x => x.InternalToken.Equals(Token));
         }
 
         private static string GenerateNewSessionId()

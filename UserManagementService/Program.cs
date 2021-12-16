@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UserManagementService.Credentials;
 using UserManagementService.Sessions;
 using UserManagementService.Users;
@@ -14,6 +15,7 @@ namespace UserManagementService
          * specific type and contents of the interface-class
          * The 'new' keyword and usage of 
          */
+        [ExcludeFromCodeCoverage]
         public static IEntitySource InitUserSource()
         {
             List<Entity> SystemUsers = new()
@@ -26,13 +28,13 @@ namespace UserManagementService
             };
             return new StaticEntitySource(SystemUsers);
         }
-
+        [ExcludeFromCodeCoverage]
         public static ISessionManagement InitSessionManagement(IEntitySource Users)
         {
             return new SessionManagement(Users);
         }
 
-
+        [ExcludeFromCodeCoverage]
         static void Main()
         {
             //Root of Configuration

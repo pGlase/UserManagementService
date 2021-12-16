@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,11 +26,13 @@ namespace UserManagementService.Users
             return FirstName == other.FirstName && LastName == other.LastName && Age == other.Age;
         }
 
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object obj)
         {
             return Equals(obj as Identity);
         }
 
+        [ExcludeFromCodeCoverage]
         public override int GetHashCode() => (FirstName, LastName, Age).GetHashCode();
     }
 

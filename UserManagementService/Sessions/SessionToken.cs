@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UserManagementService.Users;
 
 namespace UserManagementService.Sessions
@@ -8,9 +9,9 @@ namespace UserManagementService.Sessions
     ///Is stored by the user and is needed to access further functions of the API
     ///</summary>
 
-    public class SessionToken
+    public class SessionToken : IEquatable<SessionToken>
     {
-        public Identity SessionOwner {  get; }
+        public Identity SessionOwner { get; }
         public string InternalId { get; }
 
         public SessionToken(Identity _SessionOwner, string _InternalId)
@@ -29,5 +30,20 @@ namespace UserManagementService.Sessions
             SessionOwner = _SessionOwner;
             InternalId = _InternalId;
         }
+
+        public bool Equals(SessionToken other)
+        {
+            //comparing the id's should be enough - SessionManagement will enforce 1 session per user
+            return InternalId == other.InternalId;
+        }
+
+        [ExcludeFromCodeCoverage]
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as SessionToken);
+        }
+
+        [ExcludeFromCodeCoverage]
+        public override int GetHashCode() => (InternalId, SessionOwner).GetHashCode();
     }
 }

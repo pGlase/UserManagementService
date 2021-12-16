@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace UserManagementService.Sessions
 {
     [Serializable]
-public class UserSessionAlreadyExistsException : Exception
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class UserSessionAlreadyExistsException : Exception
 {
     public UserSessionAlreadyExistsException() { }
     public UserSessionAlreadyExistsException(string message) : base(message) { }

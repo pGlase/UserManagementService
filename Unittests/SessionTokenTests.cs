@@ -26,7 +26,7 @@ namespace Unittests
         }
 
         [Fact]
-        public void CConstructSessiontoken_WithEmptyId_Fail()
+        public void ConstructSessiontoken_WithEmptyId_Fail()
         {
             var TestIdentity = UsertestTools.CreateTestIdentity();
             Assert.Throws<ArgumentNullException>(() => new SessionToken(TestIdentity, ""));
