@@ -1,21 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserManagementService.Users;
+﻿using Moq;
+using System;
 using UserManagementService.Sessions;
-using Moq;
+using UserManagementService.Users;
 using Xunit;
 
 namespace Unittests
 {
     public class SessionManagementTests
     {
+        public readonly Mock<IEntitySource> MockUserSource;
+        public SessionManagement SManagement { get; private set; }
+        public Entity TestUser { get; private set; }
+
+        public SessionManagementTests()
+        {
+            MockUserSource = new Mock<IEntitySource>();
+            SManagement = new(MockUserSource.Object);
+            TestUser = UsertestTools.CreateTestEntityWithoutPassword();
+        }
+
         [Fact]
         public void ConstructSessionManagement()
         {
-            var MockUserSource = new Mock<IEntitySource>();
             _ = new SessionManagement(MockUserSource.Object);
         }
 
@@ -28,18 +34,13 @@ namespace Unittests
         [Fact]
         public void ConstructEmptySessionManagement_HasNoActiveSessions_Success()
         {
-            var MockUserSource = new Mock<IEntitySource>();
-            var SManagement = new SessionManagement(MockUserSource.Object);
             Assert.Equal(0, SManagement.GetActiveSessionCount());
         }
 
         [Fact]
         public void SessionManagement_CreateSession_ChecksUserExistance()
         {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true).Verifiable();
-            var SManagement = new SessionManagement(MockUserSource.Object);
 
             var _ = SManagement.CreateSession(TestUser);
 
@@ -50,10 +51,7 @@ namespace Unittests
         [Fact]
         public void SessionManagement_CreateSession_NonExistentUser_Failure()
         {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(It.IsAny<Entity>())).Returns(false).Verifiable();
-            var SManagement = new SessionManagement(MockUserSource.Object);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => SManagement.CreateSession(TestUser));
             MockUserSource.Verify(x => x.DoesUserExist(TestUser), Times.Once());
@@ -62,10 +60,7 @@ namespace Unittests
         [Fact]
         public void SessionManagement_CreateSession_ExistingUser_Success()
         {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
-            var SManagement = new SessionManagement(MockUserSource.Object);
 
             var SessionToken = SManagement.CreateSession(TestUser);
 
@@ -76,12 +71,10 @@ namespace Unittests
         [Fact]
         public void SessionManagement_CreateSession_ExistingUser_Twice_Failure()
         {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
-            var SManagement = new SessionManagement(MockUserSource.Object);
 
             var SessionToken = SManagement.CreateSession(TestUser);
+
             Assert.Throws<UserSessionAlreadyExistsException>(() => SManagement.CreateSession(TestUser));
         }
 
@@ -89,9 +82,7 @@ namespace Unittests
         public void SessionManagement_CreateSessions_MultipleUsers_VerifySessionCount_Success()
         {
             var TestUsers = UsertestTools.CreateFiveUniqueEntitesWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(It.IsAny<Entity>())).Returns(true);
-            var SManagement = new SessionManagement(MockUserSource.Object);
 
             foreach (var user in TestUsers)
             {
@@ -104,17 +95,13 @@ namespace Unittests
         [Fact]
         public void SessionManagement_IsValidToken_NullToken_Failure()
         {
-            var MockUserSource = new Mock<IEntitySource>();
-            var SManagement = new SessionManagement(MockUserSource.Object);
             Assert.Throws<ArgumentNullException>(() => SManagement.IsValidToken(null));
         }
 
         [Fact]
         public void SessionManagement_IsValidToken_InvalidToken_NonExistantSession_Failure()
         {
-            var MockUserSource = new Mock<IEntitySource>();
-            var SManagement = new SessionManagement(MockUserSource.Object);
-            var FraudToken = new SessionToken(UsertestTools.CreateTestIdentity(), "invalid");
+            var FraudToken = new SessionToken(TestUser.Identity, "invalid");
 
             Assert.False(SManagement.IsValidToken(FraudToken));
         }
@@ -122,10 +109,7 @@ namespace Unittests
         [Fact]
         public void SessionManagement_IsValidToken_InvalidToken_SameUser_Failure()
         {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
-            var SManagement = new SessionManagement(MockUserSource.Object);
 
             var ValidToken = SManagement.CreateSession(TestUser);
             var FraudToken = new SessionToken(ValidToken.SessionOwner, "invalid");
@@ -136,10 +120,7 @@ namespace Unittests
         [Fact]
         public void SessionManagement_IsValidToken_InvalidToken_SameId_Failure()
         {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
-            var SManagement = new SessionManagement(MockUserSource.Object);
 
             var ValidToken = SManagement.CreateSession(TestUser);
             var FraudToken = new SessionToken(
@@ -152,10 +133,8 @@ namespace Unittests
         [Fact]
         public void SessionManagement_IsValidToken_ValidToken_Success()
         {
-            var TestUser = UsertestTools.CreateTestEntityWithoutPassword();
-            var MockUserSource = new Mock<IEntitySource>();
             MockUserSource.Setup(x => x.DoesUserExist(TestUser)).Returns(true);
-            var SManagement = new SessionManagement(MockUserSource.Object);
+
             var TestToken = SManagement.CreateSession(TestUser);
 
             Assert.True(SManagement.IsValidToken(TestToken));
